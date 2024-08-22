@@ -1,0 +1,13 @@
+{
+  "name": "log-generator",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Generate log files for use in training environments",
+  "main": "log-generator.js",
+  "author": "Jordan Kasper",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "moment": "^2.30.1"
+  }
+}

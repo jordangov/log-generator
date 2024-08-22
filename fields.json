@@ -1,0 +1,106 @@
+{
+    "app_message": {
+        "description": "An application log message randomly selected from a list, with some variation",
+        "fn": "appMessage"
+    },
+    "branch": {
+        "description": "A git branch name",
+        "fn": null
+    },
+    "email": {
+        "description": "A fake email address, tied to the full_name",
+        "fn": null
+    },
+    "full_name": {
+        "description": "A generated full name (first and last), tied to the email",
+        "fn": null
+    },
+    "git_hash": {
+        "description": "A sha1sum hash for a git commit - WARNING: this is not an actual commit hash as there is no actual repo",
+        "fn": null
+    },
+    "git_message": {
+        "description": "A generated git commit message, whcih could be a merge commit, and could be multiline",
+        "fn": null
+    },
+    "http_method": {
+        "description": "An HTTP method, weighted to GET, PUT, POST, DELETE, but with lower weights for PATCH, OPTIONS, and HEAD",
+        "fn": null
+    },
+    "http_status": {
+        "description": "An HTTP status code, weighted for 200, 400, 404, and 500, but with lower weights for 301, 302, 401, 403, 501, and 503",
+        "fn": null
+    },
+    "level": {
+        "description": "A log level, weighted in order: DEBUG, INFO, WARN, ERROR",
+        "fn": "logLevel"
+    },
+    "log_date_eu": {
+        "description": "A slash-separated date in DD/MM/YYYY format",
+        "fn": "dateTimeValue"
+    },
+    "log_date_iso": {
+        "description": "A hyphen-separated date in YYYY-MM-DD format",
+        "fn": "dateTimeValue"
+    },
+    "log_date_spelled": {
+        "description": "A space-separated partial date in Day Mon DD format",
+        "fn": "dateTimeValue"
+    },
+    "log_date_us": {
+        "description": "A slash-separated date in DD/MM/YYYY format",
+        "fn": "dateTimeValue"
+    },
+    "log_time_hhmmss": {
+        "description": "A colon-separated time in HH:mm:ss format",
+        "fn": "dateTimeValue"
+    },
+    "log_timestamp_sec": {
+        "description": "A unix timestamp in seconds",
+        "fn": "dateTimeValue"
+    },
+    "log_tz_offset": {
+        "description": "An ISO-formatted timezone offset such as -0500",
+        "fn": "dateTimeValue"
+    },
+    "log_year": {
+        "description": "A four digit year",
+        "fn": "dateTimeValue"
+    },
+    "process_time_ms": {
+        "description": "An amount of time in milliseconds between 5 and 3000, weighted toward 750",
+        "fn": null
+    },
+    "query": {
+        "description": "A SQL query being logged, selected from a known list, weighted toward normal queries, with some variation",
+        "fn": null
+    },
+    "req_bytes": {
+        "description": "The number of bytes for the request between 100 and 5000, weighted toward 500",
+        "fn": null
+    },
+    "resource": {
+        "description": "A generated URL path resource, possibly with query params (weighted toward those queries that are GET)",
+        "fn": null
+    },
+    "resp_bytes": {
+        "description": "The number of bytes for the response between 100 and 10000, weighted toward 2000",
+        "fn": null
+    },
+    "server_ip": {
+        "description": "An IP address for the request destination server, less randomized",
+        "fn": "ipAddress"
+    },
+    "source_ip": {
+        "description": "An IP address for the request source machine",
+        "fn": "ipAddress"
+    },
+    "username": {
+        "description": "A generated username, not tied to the full_name",
+        "fn": "username"
+    },
+    "user_agent": {
+        "description": "A valid user agent, weighted toward common browsers, but also with some variation",
+        "fn": null
+    }
+}
