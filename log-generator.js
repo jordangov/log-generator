@@ -26,22 +26,26 @@ program
 
 program.command('templates')
     .description('Show a log template (lists all templates if none specified)')
-    .argument('template-name', 'The template to show (specify "all" to list templates)')
-    .action(showTemplate)
+    .action(showTemplates)
 
 program.command('fields')
     .description('Show a list of available log template fields')
     .action(showFields)
 
+program.command('generate')
+    .description('Generate log entries from a given template')
+    .requiredOption('-t, --template <string>', 'The template to use for the logs. Use the "templates" command to see pre-built templates. If this option matches one of those, it will be used. If not, the string provided will be the template. For example:\n./log-generator.js generate -t "{{log_date_iso}} {{source_ip}} {{http_resp}}"')
+    .action(generateLogs)
+
 program.command('app')
-    .description('Generate application log entries')
-    .action((o) => { generateLogs({ tempalte: TEMPLATES.app, ...o }) })
+    .description('Shortcut to generate logs using "app" template')
+    .action((o) => { generateLogs({ template: 'app', ...o }) })
 
 program
     .option('-c, --count <number>', 'Number of log entries to generate', forceInteger, 10)
     .option('-d, --delay <number>', 'Maximum random delay (in ms) between entries', forceInteger, 300000)
     .option('-e, --extension <string>', 'An extension to use with most resources in logs (i.e. "php" for admin.php)')
-    .option('-f, --filename <string>', 'Output filename, can use {{date}} placeholder in filename (specify "null" to suppress)', 'generated_{{date}}.log')
+    .option('-f, --filename <string>', 'Output filename, can use {{date}} placeholder in filename (specify "null" to suppress)', '{{date}}.log')
     .option('-r, --reuse <decimal>', 'The chance (0-1) that a reusable field value is reused (i.e. usernames, IP addresses, etc)', forceNumber, 0.3)
     .option('-s, --start <datetime>', 'Start date/time (ISO format) for entries', setStart, new Date())
     .option('-w, --write', 'Write log entries to the terminal', false)
@@ -64,22 +68,21 @@ function forceNumber(n = '') {
 
 // -------------------- Command Help Actions --------------------- //
 
-function showTemplate(template = 'all') {
-    if (template === 'all') {
-        console.log(Object.keys(TEMPLATES))
-    } else if (TEMPLATES[template]) {
-        console.log(TEMPLATES[template])
-    } else {
-        console.error('Sorry, but that is not a known template!')
-    }
+function showTemplates() {
+    console.log(`These are the pre-built templates you can use, 
+but you can always use one of your own. When using your own template,
+you can use fields like so {{field_name}}.
+
+Use the "fields" command to see all available fields.\n`)
+    console.log(TEMPLATES)
 }
 
 function showFields() {
-    console.log(`These are ALL of the fields used across all templates.
+    console.log(`These are all of the fields available to templates.
 You can create a custom template using these fields like so:
     {{log_date_us}} {{source_ip}} {{message}}
 
-You can see the fields used by any template using the "template <templateName> command`)
+You can see the fields used by pre-built template using the "templates" command\n`)
     console.log(Object.keys(FIELDS).map((n) => { return { [n]: FIELDS[n].description } }))
 }
 
@@ -90,7 +93,9 @@ You can see the fields used by any template using the "template <templateName> c
 function generateLogs(options = {}) {
     options = { ...program.opts(), ...options, now: moment(options.start) }
 
-    const logFields = Array.from(TEMPLATES.app.matchAll(/\{\{([a-z\_]+)\}\}/g)
+    const template = TEMPLATES[options.template] || options.template || '(none)'
+
+    const logFields = Array.from(template.matchAll(/\{\{([a-z\_]+)\}\}/g)
         .map(m => m[1]))
         .filter(f => FIELDS[f])
 
@@ -98,7 +103,7 @@ function generateLogs(options = {}) {
     for (let i=0; i<options.count; ++i) {
         options.now = options.now.add(Math.ceil(Math.random() * options.delay), 'ms')
         const fieldValues = generateFieldValues(options, logFields)
-        logs.push(replaceTemplateValues(TEMPLATES.app, fieldValues))
+        logs.push(replaceTemplateValues(template, fieldValues))
     }
     writeLogs(options, logs)
 }
